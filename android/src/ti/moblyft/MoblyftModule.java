@@ -75,6 +75,11 @@ public class MoblyftModule extends KrollModule implements MoblyftSDKListener {
 		// created
 	}
 
+	@Kroll.method
+	public void showAd() {
+		moblyft.showAd();
+	}
+
 	public void onStart(Activity activity) {
 		this.activity = activity;
 		TiProperties appProperties = TiApplication.getInstance()
