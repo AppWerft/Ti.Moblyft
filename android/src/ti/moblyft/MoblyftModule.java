@@ -11,7 +11,6 @@ package ti.moblyft;
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
-import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiProperties;
 
@@ -27,17 +26,18 @@ public class MoblyftModule extends KrollModule implements MoblyftSDKListener {
 	private final class moblyftAdListener implements MoblyftAdListener {
 		@Override
 		public void adAvailable() {
-			Log.d("💰💰", "adAvailable");
+			Log.d(LCAT, "adAvailable");
 		}
 
 		@Override
 		public void adFailedWithError(String errorMessage) {
+			Log.d(LCAT, "adFailedWithError " + errorMessage);
 			// This callback method will get call if ad is failed to cache
 		}
 
 		@Override
 		public void adDidShow() {
-			Log.d("💰💰", "adDidShow");
+			Log.d(LCAT, "adDidShow");
 			// This callback method will get call when ad shows or get opened
 		}
 
@@ -52,12 +52,12 @@ public class MoblyftModule extends KrollModule implements MoblyftSDKListener {
 			// To get the reward details from 'rewardDetail' object
 			String rewardName = rewardDetail.getRewardName();
 			int rewardCount = rewardDetail.getRewardCount();
+			Log.d(LCAT, "rewardName=" + rewardName);
 		}
 	}
 
 	// Standard Debugging variables
-	private static final String LCAT = "MoblyftModule";
-	private static final boolean DBG = TiConfig.LOGD;
+	private static final String LCAT = "Moblyft 💰💰";
 	private Activity activity;
 	private MoblyftSDK moblyft;
 
@@ -71,8 +71,6 @@ public class MoblyftModule extends KrollModule implements MoblyftSDKListener {
 	@Kroll.onAppCreate
 	public static void onAppCreate(TiApplication app) {
 		Log.d(LCAT, "inside onAppCreate");
-		// put module init code that needs to run when the application is
-		// created
 	}
 
 	@Kroll.method
@@ -93,11 +91,12 @@ public class MoblyftModule extends KrollModule implements MoblyftSDKListener {
 	}
 
 	@Override
-	public void moblyftInitSdkFailedWithError(String arg0) {
+	public void moblyftInitSdkFailedWithError(String err) {
+		Log.e(LCAT, "moblyftInitSdkFailedWithError=" + err);
 	}
 
 	@Override
 	public void moblyftInitSdkSuccessful() {
-		Log.d("💰💰", "moblyftInitSdkSuccessful");
+		Log.d(LCAT, "moblyftInitSdkSuccessful");
 	}
 }
