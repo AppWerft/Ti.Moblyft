@@ -6,7 +6,7 @@ work in progress
 ```javascript
 var Ad = require("ti.moblyft");
 Ad.showAd();
-``
+```
 
 tiapp.xml
 ```xml
