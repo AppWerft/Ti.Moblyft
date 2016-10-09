@@ -1,0 +1,18 @@
+%define lookup-function-name lookupGeneratedInit
+%define class-name MoblyftBindings
+%{
+
+#include <string.h>
+#include <v8.h>
+#include <KrollBindings.h>
+
+#include "ti.moblyft.MoblyftModule.h"
+#include "ti.moblyft.ExampleProxy.h"
+
+
+%}
+struct titanium::bindings::BindEntry;
+%%
+ti.moblyft.MoblyftModule, ::ti::moblyft::MoblyftModule::bindProxy, ::ti::moblyft::MoblyftModule::dispose
+ti.moblyft.ExampleProxy, ::ti::moblyft::moblyft::ExampleProxy::bindProxy, ::ti::moblyft::moblyft::ExampleProxy::dispose
+%%
