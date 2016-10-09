@@ -4,7 +4,8 @@ work in progress
 
 ##Usage
 
-require("ti.moblyft");
+var Ad = require("ti.moblyft");
+Ad.showAd();
 
 tiapp.xml
 ```xml
