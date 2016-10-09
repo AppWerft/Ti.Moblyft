@@ -15,4 +15,4 @@ name: moblyft
 moduleid: ti.moblyft
 guid: 11fab9b1-7531-4ba5-b001-3ef06484af9c
 platform: android
-minsdk: 5.5.1.GA
+minsdk: 5.0.0.GA

@@ -89,6 +89,7 @@ Handle<FunctionTemplate> MoblyftModule::getProxyTemplate()
 	titanium::ProxyFactory::registerProxyPair(javaClass, *proxyTemplate);
 
 	// Method bindings --------------------------------------------------------
+	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "showAd", MoblyftModule::showAd);
 
 	Local<ObjectTemplate> prototypeTemplate = proxyTemplate->PrototypeTemplate();
 	Local<ObjectTemplate> instanceTemplate = proxyTemplate->InstanceTemplate();
@@ -107,6 +108,49 @@ Handle<FunctionTemplate> MoblyftModule::getProxyTemplate()
 }
 
 // Methods --------------------------------------------------------------------
+Handle<Value> MoblyftModule::showAd(const Arguments& args)
+{
+	LOGD(TAG, "showAd()");
+	HandleScope scope;
+
+	JNIEnv *env = titanium::JNIScope::getEnv();
+	if (!env) {
+		return titanium::JSException::GetJNIEnvironmentError();
+	}
+	static jmethodID methodID = NULL;
+	if (!methodID) {
+		methodID = env->GetMethodID(MoblyftModule::javaClass, "showAd", "()V");
+		if (!methodID) {
+			const char *error = "Couldn't find proxy method 'showAd' with signature '()V'";
+			LOGE(TAG, error);
+				return titanium::JSException::Error(error);
+		}
+	}
+
+	titanium::Proxy* proxy = titanium::Proxy::unwrap(args.Holder());
+
+	jvalue* jArguments = 0;
+
+	jobject javaProxy = proxy->getJavaObject();
+	env->CallVoidMethodA(javaProxy, methodID, jArguments);
+
+	if (!JavaObject::useGlobalRefs) {
+		env->DeleteLocalRef(javaProxy);
+	}
+
+
+
+	if (env->ExceptionCheck()) {
+		titanium::JSException::fromJavaException();
+		env->ExceptionClear();
+	}
+
+
+
+
+	return v8::Undefined();
+
+}
 
 // Dynamic property accessors -------------------------------------------------
 
