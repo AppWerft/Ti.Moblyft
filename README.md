@@ -3,9 +3,10 @@
 work in progress
 
 ##Usage
-
+```javascript
 var Ad = require("ti.moblyft");
 Ad.showAd();
+``
 
 tiapp.xml
 ```xml
