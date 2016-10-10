@@ -6,6 +6,10 @@ work in progress
 ```javascript
 var Ad = require("ti.moblyft");
 
+Ad.initSDK({
+	appKey : "APPKEY",
+	userId : "USERID"
+})
 if (Ad.isAdAvailable()) {
 	Ad.showAd();
 }

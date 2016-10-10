@@ -29,8 +29,9 @@ public:
 
 private:
 	// Methods -----------------------------------------------------------
-	static v8::Handle<v8::Value> showAd(const v8::Arguments&);
 	static v8::Handle<v8::Value> isAdAvailable(const v8::Arguments&);
+	static v8::Handle<v8::Value> initSDK(const v8::Arguments&);
+	static v8::Handle<v8::Value> showAd(const v8::Arguments&);
 
 	// Dynamic property accessors ----------------------------------------
 

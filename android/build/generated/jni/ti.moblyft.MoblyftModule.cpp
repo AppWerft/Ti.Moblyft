@@ -89,8 +89,9 @@ Handle<FunctionTemplate> MoblyftModule::getProxyTemplate()
 	titanium::ProxyFactory::registerProxyPair(javaClass, *proxyTemplate);
 
 	// Method bindings --------------------------------------------------------
-	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "showAd", MoblyftModule::showAd);
 	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "isAdAvailable", MoblyftModule::isAdAvailable);
+	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "initSDK", MoblyftModule::initSDK);
+	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "showAd", MoblyftModule::showAd);
 
 	Local<ObjectTemplate> prototypeTemplate = proxyTemplate->PrototypeTemplate();
 	Local<ObjectTemplate> instanceTemplate = proxyTemplate->InstanceTemplate();
@@ -109,49 +110,6 @@ Handle<FunctionTemplate> MoblyftModule::getProxyTemplate()
 }
 
 // Methods --------------------------------------------------------------------
-Handle<Value> MoblyftModule::showAd(const Arguments& args)
-{
-	LOGD(TAG, "showAd()");
-	HandleScope scope;
-
-	JNIEnv *env = titanium::JNIScope::getEnv();
-	if (!env) {
-		return titanium::JSException::GetJNIEnvironmentError();
-	}
-	static jmethodID methodID = NULL;
-	if (!methodID) {
-		methodID = env->GetMethodID(MoblyftModule::javaClass, "showAd", "()V");
-		if (!methodID) {
-			const char *error = "Couldn't find proxy method 'showAd' with signature '()V'";
-			LOGE(TAG, error);
-				return titanium::JSException::Error(error);
-		}
-	}
-
-	titanium::Proxy* proxy = titanium::Proxy::unwrap(args.Holder());
-
-	jvalue* jArguments = 0;
-
-	jobject javaProxy = proxy->getJavaObject();
-	env->CallVoidMethodA(javaProxy, methodID, jArguments);
-
-	if (!JavaObject::useGlobalRefs) {
-		env->DeleteLocalRef(javaProxy);
-	}
-
-
-
-	if (env->ExceptionCheck()) {
-		titanium::JSException::fromJavaException();
-		env->ExceptionClear();
-	}
-
-
-
-
-	return v8::Undefined();
-
-}
 Handle<Value> MoblyftModule::isAdAvailable(const Arguments& args)
 {
 	LOGD(TAG, "isAdAvailable()");
@@ -198,6 +156,116 @@ Handle<Value> MoblyftModule::isAdAvailable(const Arguments& args)
 
 
 	return v8Result;
+
+}
+Handle<Value> MoblyftModule::initSDK(const Arguments& args)
+{
+	LOGD(TAG, "initSDK()");
+	HandleScope scope;
+
+	JNIEnv *env = titanium::JNIScope::getEnv();
+	if (!env) {
+		return titanium::JSException::GetJNIEnvironmentError();
+	}
+	static jmethodID methodID = NULL;
+	if (!methodID) {
+		methodID = env->GetMethodID(MoblyftModule::javaClass, "initSDK", "(Lorg/appcelerator/kroll/KrollDict;)V");
+		if (!methodID) {
+			const char *error = "Couldn't find proxy method 'initSDK' with signature '(Lorg/appcelerator/kroll/KrollDict;)V'";
+			LOGE(TAG, error);
+				return titanium::JSException::Error(error);
+		}
+	}
+
+	titanium::Proxy* proxy = titanium::Proxy::unwrap(args.Holder());
+
+	if (args.Length() < 1) {
+		char errorStringBuffer[100];
+		sprintf(errorStringBuffer, "initSDK: Invalid number of arguments. Expected 1 but got %d", args.Length());
+		return ThrowException(Exception::Error(String::New(errorStringBuffer)));
+	}
+
+	jvalue jArguments[1];
+
+
+
+
+	bool isNew_0;
+	
+	if (!args[0]->IsNull()) {
+		Local<Value> arg_0 = args[0];
+		jArguments[0].l =
+			titanium::TypeConverter::jsObjectToJavaKrollDict(env, arg_0, &isNew_0);
+	} else {
+		jArguments[0].l = NULL;
+	}
+
+	jobject javaProxy = proxy->getJavaObject();
+	env->CallVoidMethodA(javaProxy, methodID, jArguments);
+
+	if (!JavaObject::useGlobalRefs) {
+		env->DeleteLocalRef(javaProxy);
+	}
+
+
+
+			if (isNew_0) {
+				env->DeleteLocalRef(jArguments[0].l);
+			}
+
+
+	if (env->ExceptionCheck()) {
+		titanium::JSException::fromJavaException();
+		env->ExceptionClear();
+	}
+
+
+
+
+	return v8::Undefined();
+
+}
+Handle<Value> MoblyftModule::showAd(const Arguments& args)
+{
+	LOGD(TAG, "showAd()");
+	HandleScope scope;
+
+	JNIEnv *env = titanium::JNIScope::getEnv();
+	if (!env) {
+		return titanium::JSException::GetJNIEnvironmentError();
+	}
+	static jmethodID methodID = NULL;
+	if (!methodID) {
+		methodID = env->GetMethodID(MoblyftModule::javaClass, "showAd", "()V");
+		if (!methodID) {
+			const char *error = "Couldn't find proxy method 'showAd' with signature '()V'";
+			LOGE(TAG, error);
+				return titanium::JSException::Error(error);
+		}
+	}
+
+	titanium::Proxy* proxy = titanium::Proxy::unwrap(args.Holder());
+
+	jvalue* jArguments = 0;
+
+	jobject javaProxy = proxy->getJavaObject();
+	env->CallVoidMethodA(javaProxy, methodID, jArguments);
+
+	if (!JavaObject::useGlobalRefs) {
+		env->DeleteLocalRef(javaProxy);
+	}
+
+
+
+	if (env->ExceptionCheck()) {
+		titanium::JSException::fromJavaException();
+		env->ExceptionClear();
+	}
+
+
+
+
+	return v8::Undefined();
 
 }
 
