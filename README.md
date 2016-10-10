@@ -7,9 +7,13 @@ work in progress
 var Ad = require("ti.moblyft");
 
 Ad.initSDK({
-	appKey : "APPKEY",
-	userId : "USERID"
-})
+		appKey : "APPKEY", // optional, you can use entry in tiapp.xml
+		userId : "USERID" // optional, you can use entry in tiapp.xml
+	}, 
+	onSuccess : function() {
+		console.log("OK");
+	}
+)
 if (Ad.isAdAvailable()) {
 	Ad.showAd();
 }

@@ -9,6 +9,7 @@
 package ti.moblyft;
 
 import org.appcelerator.kroll.KrollDict;
+import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
@@ -26,6 +27,7 @@ import com.moblyft.pojo.MoblyftRewardInfo;
 public class MoblyftModule extends KrollModule implements MoblyftSDKListener {
 	private String MOBLYFT_APPKEY;
 	private String MOBLYFT_USERID;
+	private KrollFunction onSuccess;
 
 	private final class moblyftAdListener implements MoblyftAdListener {
 		@Override
@@ -97,7 +99,7 @@ public class MoblyftModule extends KrollModule implements MoblyftSDKListener {
 	}
 
 	@Kroll.method
-	public void initSDK(KrollDict creds) {
+	public void initSDK(KrollDict creds, KrollFunction onSuccess) {
 		if (creds != null) {
 			if (creds.containsKeyAndNotNull("appKey")) {
 				MOBLYFT_APPKEY = creds.getString("appKey");
@@ -105,6 +107,10 @@ public class MoblyftModule extends KrollModule implements MoblyftSDKListener {
 			if (creds.containsKeyAndNotNull("userId")) {
 				MOBLYFT_USERID = creds.getString("userId");
 			}
+		}
+		if (onSuccess != null) {
+			Object object = onSuccess;
+			this.onSuccess = (KrollFunction) object;
 		}
 		moblyft.initSDKWithAppKey(activity, MOBLYFT_APPKEY, MOBLYFT_USERID);
 		moblyft.setSDKListener(this);
@@ -119,6 +125,9 @@ public class MoblyftModule extends KrollModule implements MoblyftSDKListener {
 
 	@Override
 	public void moblyftInitSdkSuccessful() {
+		if (onSuccess != null) {
+			onSuccess.call(getKrollObject(), new KrollDict());
+		}
 		Log.d(LCAT, "moblyftInitSdkSuccessful");
 	}
 }
