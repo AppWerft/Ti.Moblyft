@@ -8,6 +8,8 @@
  */
 package ti.moblyft;
 
+import org.appcelerator.kroll.KrollDict;
+import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
@@ -17,49 +19,19 @@ import org.appcelerator.titanium.TiProperties;
 import android.app.Activity;
 
 import com.moblyft.MoblyftSDK;
-import com.moblyft.interfaces.MoblyftAdListener;
 import com.moblyft.interfaces.MoblyftSDKListener;
-import com.moblyft.pojo.MoblyftRewardInfo;
 
 @Kroll.module(name = "Moblyft", id = "ti.moblyft")
 public class MoblyftModule extends KrollModule implements MoblyftSDKListener {
-	private final class moblyftAdListener implements MoblyftAdListener {
-		@Override
-		public void adAvailable() {
-			Log.d(LCAT, "adAvailable");
-		}
-
-		@Override
-		public void adFailedWithError(String errorMessage) {
-			Log.d(LCAT, "adFailedWithError " + errorMessage);
-			// This callback method will get call if ad is failed to cache
-		}
-
-		@Override
-		public void adDidShow() {
-			Log.d(LCAT, "adDidShow");
-			// This callback method will get call when ad shows or get opened
-		}
-
-		@Override
-		public void adDidHide() {
-			// This callback method will get call when ad hides or get closed
-		}
-
-		@Override
-		public void onRewardReceived(MoblyftRewardInfo rewardDetail) {
-			// This callback method will only calls in case of Rewarded Video Ad
-			// To get the reward details from 'rewardDetail' object
-			String rewardName = rewardDetail.getRewardName();
-			int rewardCount = rewardDetail.getRewardCount();
-			Log.d(LCAT, "rewardName=" + rewardName);
-		}
-	}
-
 	// Standard Debugging variables
-	private static final String LCAT = "Moblyft 💰💰";
+	public static final String LCAT = "Moblyft 💰💰";
 	private Activity activity;
 	private MoblyftSDK moblyft;
+	private KrollFunction onResult;
+	private KrollFunction onInit;
+	private String MOBLYFT_APPKEY;
+	private String MOBLYFT_USERID;
+	MymoblyftAdListener lauscher = new MymoblyftAdListener();
 
 	// You can define constants with @Kroll.constant, for example:
 	// @Kroll.constant public static final String EXTERNAL_NAME = value;
@@ -74,13 +46,37 @@ public class MoblyftModule extends KrollModule implements MoblyftSDKListener {
 	}
 
 	@Kroll.method
-	public void showAd() {
+	public void showAd(Object cb) {
+		if (cb != null && cb instanceof KrollFunction) {
+			onResult = (KrollFunction) cb;
+			lauscher.setKroll(onResult, getKrollObject());
+		}
 		moblyft.showAd();
 	}
 
 	@Kroll.method
 	public boolean isAdAvailable() {
 		return moblyft.isAdAvailable();
+	}
+
+	@Kroll.method
+	public void initSDK(KrollDict creds, KrollFunction onSuccess) {
+		if (creds != null) {
+			if (creds.containsKeyAndNotNull("appKey")) {
+				MOBLYFT_APPKEY = creds.getString("appKey");
+			}
+			if (creds.containsKeyAndNotNull("userId")) {
+				MOBLYFT_USERID = creds.getString("userId");
+			}
+		}
+		if (onSuccess != null) {
+			Object object = onSuccess;
+			this.onInit = (KrollFunction) object;
+		}
+		moblyft.initSDKWithAppKey(activity, MOBLYFT_APPKEY, MOBLYFT_USERID);
+		moblyft.setSDKListener(this);
+		moblyft.setMoblyftAdListener(lauscher);
+
 	}
 
 	public void onStart(Activity activity) {
@@ -91,17 +87,27 @@ public class MoblyftModule extends KrollModule implements MoblyftSDKListener {
 		moblyft.initSDKWithAppKey(activity,
 				appProperties.getString("MOBLYFT_APPKEY", ""),
 				appProperties.getString("MOBLYFT_USERID", ""));
-		moblyft.setSDKListener(this);
-		moblyft.setMoblyftAdListener(new moblyftAdListener());
+
 	}
 
 	@Override
 	public void moblyftInitSdkFailedWithError(String err) {
+		if (onInit != null) {
+			KrollDict res = new KrollDict();
+			res.put("success", false);
+			onInit.call(getKrollObject(), res);
+		}
 		Log.e(LCAT, "moblyftInitSdkFailedWithError=" + err);
 	}
 
 	@Override
 	public void moblyftInitSdkSuccessful() {
+		if (onInit != null) {
+			KrollDict res = new KrollDict();
+			res.put("success", true);
+			onInit.call(getKrollObject(), res);
+		}
 		Log.d(LCAT, "moblyftInitSdkSuccessful");
+
 	}
 }
