@@ -1,7 +1,8 @@
 #Ti.Moblyft
 
 Titanium module for Moblyft.
-<img src="https://scontent-fra3-1.xx.fbcdn.net/t31.0-8/13416983_1583955851897513_6730517565621884363_o.jpg" width=600 />
+
+<img src="https://scontent-fra3-1.xx.fbcdn.net/t31.0-8/13416983_1583955851897513_6730517565621884363_o.jpg" width=700 />
 
 ##Usage
 ```javascript
