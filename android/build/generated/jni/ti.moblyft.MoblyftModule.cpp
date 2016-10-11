@@ -169,9 +169,9 @@ Handle<Value> MoblyftModule::initSDK(const Arguments& args)
 	}
 	static jmethodID methodID = NULL;
 	if (!methodID) {
-		methodID = env->GetMethodID(MoblyftModule::javaClass, "initSDK", "(Lorg/appcelerator/kroll/KrollDict;)V");
+		methodID = env->GetMethodID(MoblyftModule::javaClass, "initSDK", "(Lorg/appcelerator/kroll/KrollDict;Lorg/appcelerator/kroll/KrollFunction;)V");
 		if (!methodID) {
-			const char *error = "Couldn't find proxy method 'initSDK' with signature '(Lorg/appcelerator/kroll/KrollDict;)V'";
+			const char *error = "Couldn't find proxy method 'initSDK' with signature '(Lorg/appcelerator/kroll/KrollDict;Lorg/appcelerator/kroll/KrollFunction;)V'";
 			LOGE(TAG, error);
 				return titanium::JSException::Error(error);
 		}
@@ -179,13 +179,13 @@ Handle<Value> MoblyftModule::initSDK(const Arguments& args)
 
 	titanium::Proxy* proxy = titanium::Proxy::unwrap(args.Holder());
 
-	if (args.Length() < 1) {
+	if (args.Length() < 2) {
 		char errorStringBuffer[100];
-		sprintf(errorStringBuffer, "initSDK: Invalid number of arguments. Expected 1 but got %d", args.Length());
+		sprintf(errorStringBuffer, "initSDK: Invalid number of arguments. Expected 2 but got %d", args.Length());
 		return ThrowException(Exception::Error(String::New(errorStringBuffer)));
 	}
 
-	jvalue jArguments[1];
+	jvalue jArguments[2];
 
 
 
@@ -200,6 +200,16 @@ Handle<Value> MoblyftModule::initSDK(const Arguments& args)
 		jArguments[0].l = NULL;
 	}
 
+	bool isNew_1;
+	
+	if (!args[1]->IsNull()) {
+		Local<Value> arg_1 = args[1];
+		jArguments[1].l =
+			titanium::TypeConverter::jsValueToJavaObject(env, arg_1, &isNew_1);
+	} else {
+		jArguments[1].l = NULL;
+	}
+
 	jobject javaProxy = proxy->getJavaObject();
 	env->CallVoidMethodA(javaProxy, methodID, jArguments);
 
@@ -211,6 +221,11 @@ Handle<Value> MoblyftModule::initSDK(const Arguments& args)
 
 			if (isNew_0) {
 				env->DeleteLocalRef(jArguments[0].l);
+			}
+
+
+			if (isNew_1) {
+				env->DeleteLocalRef(jArguments[1].l);
 			}
 
 
