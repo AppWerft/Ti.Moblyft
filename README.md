@@ -28,3 +28,16 @@ tiapp.xml
 <property name="MOBLYFT_APPKEY" type="string">xxxx</property>
 <property name="MOBLYFT_USERID" type="string">xxxx</property>
 ```
+
+you have to add some activities to application node of tiapp.xml:
+```xml
+<activity android:name="com.moblyft.activity.MLInterstitialActivity" android:configChanges="orientation|screenSize" android:label="@string/app_name" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+<activity android:name="com.moblyft.activity.MLVideoActivity" android:configChanges="orientation|screenSize" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
+<activity android:name="com.moblyft.activity.MLVideoEndCardActivity" android:configChanges="orientation|screenSize" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
+<activity android:name="com.moblyft.activity.MLInterstitialActivity" android:configChanges="orientation|screenSize" android:label="@string/app_name" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+<activity android:name="com.moblyft.activity.MLVideoActivity" android:configChanges="orientation|screenSize" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
+<activity android:name="com.moblyft.activity.MLVideoEndCardActivity" android:configChanges="orientation|screenSize" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
+<activity android:name="com.moblyft.activity.MLWebViewActivity" android:configChanges="orientation|screenSize" android:label="@string/app_name"  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>		
+		
+```
+
